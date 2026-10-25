@@ -1,9 +1,13 @@
 iBee Analytics Developer Assessment - Candidate Details
+
 Task chosen: Task 2 - AI-Powered Document Intelligence Platform (IntelliDocs AI)
 
-Full name:            [FILL IN]
-Register number:      [FILL IN]
-Email address:        [FILL IN]
-Phone number:         [FILL IN]
-GitHub repository:    [FILL IN]
-Live demo URL:        [FILL IN AFTER YOU DEPLOY AND VERIFY]
+Full name:            MUTHUMARI M
+Register number:      921023243013
+Email address:        muthumari181109@gmail.com
+Phone number:         9500815509
+GitHub repository:    https://github.com/muthu-mari800/Intellidocs-ai
+Live demo URL:        https://intellidocs-ai-z7hx.onrender.com
+
+
+

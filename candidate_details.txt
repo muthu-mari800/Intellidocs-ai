@@ -1,0 +1,9 @@
+iBee Analytics Developer Assessment - Candidate Details
+Task chosen: Task 2 - AI-Powered Document Intelligence Platform (IntelliDocs AI)
+
+Full name:            [FILL IN]
+Register number:      [FILL IN]
+Email address:        [FILL IN]
+Phone number:         [FILL IN]
+GitHub repository:    [FILL IN]
+Live demo URL:        [FILL IN AFTER YOU DEPLOY AND VERIFY]

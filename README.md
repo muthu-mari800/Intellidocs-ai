@@ -1,176 +1,403 @@
 # IntelliDocs AI — Intelligent Document Analysis & Insight Platform
-*Transform Documents into Intelligent Insights.*
 
-IntelliDocs AI is a general-purpose document analysis platform. Upload a PDF or TXT document, and the app identifies what
-kind of document it is, extracts the information that matters for that type, writes a Gemini-generated summary, validates
-the structured JSON, scores completeness and draws charts from the document's actual content. You can review and correct
-every extracted field before downloading the JSON.
+Transform documents into structured, validated insights with AI.
 
-## Screens
-The app follows a dark-navy dashboard layout: **Overview** (upload, sample documents, analysis settings, current document,
-completeness ring, insights and extracted JSON on one page), **AI Analyzer** (summary and findings), **Data Extraction**
-(editable fields, validation, JSON download), **Insights Hub** (charts) and **Preferences** (AI configuration and privacy).
-The *Gemini Model* and *Document Type* boxes in the header apply to every page. All numbers on screen come from the
-uploaded document or the analysis run (for example, processing time is measured, not estimated).
+IntelliDocs AI is an AI-powered document intelligence platform built with Python and Streamlit. Users can upload PDF or TXT documents, identify document types, extract relevant information, generate AI-powered summaries, validate extracted fields, calculate document completeness, and explore data-driven visual insights.
 
-## Supported document types
-| Type | Extracted fields (Detailed level) | Scored as complete when it has |
-|---|---|---|
-| Resume / CV | name, email, skills, education, experience, certifications, projects (+ skill categories) | name, email, skills, education, experience, certifications, projects |
-| Academic notes | title, topics, key points, facts, author, dates, entities | title, topics, key points |
-| Syllabus | title, topics, outcomes/key points, instructor/institution, facts, dates, entities | title, topics, key points |
-| Certificate | title, issuer, recipient and other entities, dates, facts | title, issuer, entities, dates |
-| Business report | title, topics, key points, findings, figures/metrics, dates, author, entities, facts | title, topics, key points, findings |
-| Project report | title, topics, key points, findings, dates, facts, author, entities, figures | title, topics, key points, findings |
-| Research paper | title, authors, topics, key points, findings, facts, dates, entities, figures | title, authors, topics, key points, findings |
-| General document | title, topics, key points, dates, entities, facts, findings, author, figures | title, topics, key points |
+The platform supports resumes, academic notes, syllabi, certificates, business reports, project reports, research papers, and general documents.
 
-**Document type detection:** keyword rules run first (no API call). If they are not confident, Gemini classifies the
-document. You can always override the type under the *Document Type* box in the header.
+**GitHub Repository:** [https://github.com/muthu-mari800/Intellidocs-ai](https://github.com/muthu-mari800/Intellidocs-ai)
+**Live Demo:** [https://intellidocs-ai-z7hx.onrender.com](https://intellidocs-ai-z7hx.onrender.com)
 
-## Main features
-| Assessment requirement | Implementation |
-|---|---|
-| 1. Upload & processing | PDF (PyMuPDF) and UTF-8 TXT; 5 MB limit; empty/blank, encrypted, corrupted, scanned and unsupported files give clear errors; 10 sample documents covering every supported type |
-| 2. AI summaries | Gemini; Brief / Detailed / Bullet-Point styles; regenerate button; grounded prompts |
-| 3. Structured extraction | Document-type-aware fields (see table above); Pydantic schemas (`ResumeData`, `GeneralData`); missing = `null` / `[]`; downloadable JSON that includes `document_type` |
-| 4. Adaptive analysis | Basic / Standard / Detailed levels and focus topics change the fields requested, the extraction rules and the summary prompt |
-| 5. Visual insights | Plotly charts chosen by document type and depth: resumes get skills/experience/education charts; other types get topic mentions, key dates, entities by type and key figures; field completeness for all (empty states when data is insufficient) |
-| 6. Interactive results | Editable fields, missing/uncertain badges, live completeness %, feedback box, JSON + validation-report downloads |
+> **Note:** The application is deployed on Render. The live application and Gemini-powered analysis must be tested before submission because API availability, rate limits, and processing time can affect results.
 
-**Design choice:** visuals are data-driven charts built only from extracted data, not AI-generated images, so nothing is
-invented. An image-generation API is optional in the assessment.
+## 1. Key Features
 
-## Technology stack
-Python 3.11/3.12 · Streamlit · Google Gemini API (`google-genai` SDK) · PyMuPDF · Pydantic v2 · Plotly · pandas ·
-python-dotenv · pytest · Render · GitHub.
+### Document Upload and Processing
 
-## Project structure
+- Upload PDF and TXT documents.
+- Maximum upload size: 5 MB.
+- Extract text from PDFs using PyMuPDF.
+- Validate empty, unsupported, corrupted, encrypted, and scanned/image-only PDFs.
+- Configure document size and page limits using environment variables.
+
+### AI-Powered Summarization
+
+- Generate summaries using the Google Gemini API.
+- Choose Brief, Detailed, or Bullet-Point summary styles.
+- Adjust analysis levels and focus topics.
+- Regenerate summaries when needed.
+
+### Structured Information Extraction
+
+- Extract fields according to the detected document type.
+- Validate structured responses using Pydantic schemas.
+- Represent unavailable fields using null values or empty lists.
+- Identify missing, uncertain, and unverified fields.
+- Download extracted information as JSON.
+
+### Document Completeness and Validation
+
+- Calculate completeness based on document-specific required fields.
+- Validate field formats and compare extracted information with the source text.
+- Identify uncertain information for user review.
+- Allow users to edit extracted fields and review validation results.
+
+### Visual Insights
+
+- Generate charts using Plotly.
+- Display resume-related skills, education, and experience insights when data is available.
+- Visualize topics, dates, entities, and figures for other document types.
+- Display appropriate empty states when insufficient data is available.
+
+### Interactive Dashboard
+
+The application provides five main sections:
+
+- **Overview:** Upload documents, configure analysis, and view results.
+- **AI Analyzer:** Review summaries and findings.
+- **Data Extraction:** Inspect and edit extracted fields.
+- **Insights Hub:** Explore charts and visual summaries.
+- **Preferences:** Configure AI settings and privacy-related options.
+
+## 2. Supported Document Types
+
+| Document type    | Example extracted information                                        |
+| ---------------- | -------------------------------------------------------------------- |
+| Resume / CV      | Name, email, skills, education, experience, certifications, projects |
+| Academic notes   | Title, topics, key points, facts, dates                              |
+| Syllabus         | Title, topics, learning outcomes, institution, dates                 |
+| Certificate      | Title, issuer, recipient, entities, dates                            |
+| Business report  | Title, topics, findings, figures, metrics                            |
+| Project report   | Title, topics, findings, dates, facts                                |
+| Research paper   | Authors, topics, findings, facts, dates                              |
+| General document | Title, topics, key points, entities, dates, findings                 |
+
+The application uses keyword-based rules for initial document classification. When classification confidence is insufficient, Gemini can be used as a fallback. Users can also override the document type manually.
+
+The fields requested depend on the selected analysis level and focus topics. Fields outside the selected scope may be marked as unverified rather than missing.
+
+## 3. Technology Stack
+
+- **Programming language:** Python
+- **User interface:** Streamlit
+- **AI service:** Google Gemini API
+- **AI SDK:** google-genai
+- **PDF processing:** PyMuPDF
+- **Data validation:** Pydantic v2
+- **Visualization:** Plotly
+- **Data processing:** pandas
+- **Environment configuration:** python-dotenv
+- **Testing:** pytest
+- **Version control:** Git and GitHub
+- **Deployment:** Render
+
+## 4. Project Structure
+
+```text
+intellidocs-ai/
+├── app.py
+├── backend/
+│   ├── __init__.py
+│   ├── ai_service.py
+│   ├── config.py
+│   ├── doctype.py
+│   ├── document_processor.py
+│   ├── extraction.py
+│   ├── insights.py
+│   └── validation.py
+├── components/
+│   ├── __init__.py
+│   ├── ui.py
+│   └── charts.py
+├── models/
+│   ├── __init__.py
+│   └── schemas.py
+├── sample_documents/
+├── tests/
+├── .streamlit/
+│   └── config.toml
+├── .env.example
+├── .gitignore
+├── candidate_details.txt
+├── render.yaml
+├── requirements.txt
+├── SUBMISSION_CHECKLIST.md
+└── README.md
 ```
-app.py                     Streamlit UI (5 pages)
-backend/config.py          Environment settings
-backend/document_processor.py  Upload validation + PDF/TXT text extraction
-backend/ai_service.py      Gemini client wrapper (timeout, retry, friendly errors)
-backend/doctype.py         Document types, per-type field specs, keyword classifier
-backend/extraction.py      Document-type detection, prompts, level/focus logic, parsing, grounding checks
-backend/validation.py      Missing-field detection, completeness score
-backend/insights.py        Date parsing, experience totals, keyword skill grouping
-components/ui.py, charts.py  Styling helpers and Plotly charts
-models/schemas.py          Pydantic schemas and enums
-sample_documents/          Fictional samples: resumes, academic notes, syllabus, certificate, business report, project report
-tests/                     pytest suite (AI is mocked)
-render.yaml, .env.example, .gitignore, .streamlit/config.toml
-```
 
-## Local setup (Windows PowerShell)
+The project may contain additional test files and sample documents. Local environment folders, API secrets, and generated cache files should not be included in the submission ZIP.
+
+## 5. Local Setup and Execution
+
+### Prerequisites
+
+- Python 3.11 or 3.12 recommended.
+- pip package manager.
+- Google Gemini API key for AI-powered features.
+
+### Windows PowerShell
+
+Clone the repository and enter the project directory:
+
 ```powershell
-cd intellidocs-ai
+git clone https://github.com/muthu-mari800/Intellidocs-ai.git
+cd Intellidocs-ai
+```
+
+Create and activate a virtual environment:
+
+```powershell
 py -3.12 -m venv .venv
-.\.venv\Scripts\Activate.ps1      # if blocked: Set-ExecutionPolicy -Scope Process Bypass
+.\.venv\Scripts\Activate.ps1
+```
+
+If PowerShell blocks activation, use the following command for the current terminal session and activate again:
+
+```powershell
+Set-ExecutionPolicy -Scope Process Bypass
+.\.venv\Scripts\Activate.ps1
+```
+
+Install dependencies:
+
+```powershell
 pip install -r requirements.txt
-Copy-Item .env.example .env       # then edit .env and paste your key
+```
+
+Create a local environment file:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Open `.env` and configure your Gemini API key and any required settings. Never commit this file to GitHub.
+
+Start the application:
+
+```powershell
 streamlit run app.py
 ```
-macOS/Linux:
+
+Open the URL shown in the terminal, normally:
+
+[http://localhost:8501](http://localhost:8501)
+
+### macOS / Linux
+
 ```bash
-python3 -m venv .venv && source .venv/bin/activate
+git clone https://github.com/muthu-mari800/Intellidocs-ai.git
+cd Intellidocs-ai
+
+python3 -m venv .venv
+source .venv/bin/activate
+
 pip install -r requirements.txt
 cp .env.example .env
+
 streamlit run app.py
 ```
-Open http://localhost:8501.
 
-### Gemini API key
-Create a free key in [Google AI Studio](https://aistudio.google.com/), put it in `.env` as `GEMINI_API_KEY`.
-The model is configurable via `GEMINI_MODEL` (default `gemini-flash-latest`; some keys get 404 for versioned names such as `gemini-2.5-flash`). Model availability and free-tier limits change,
-so if you see "model not found", check AI Studio for a current model id and update `GEMINI_MODEL` (or the Preferences page).
-Use **Preferences → Test AI connection** to verify.
+Configure the required environment variables in `.env` before using Gemini-powered features.
 
-### Environment variables
-| Name | Purpose | Default |
-|---|---|---|
-| `GEMINI_API_KEY` | Gemini key (required for AI features) | — |
-| `GEMINI_MODEL` | Model id | `gemini-flash-latest` |
-| `GEMINI_FALLBACK_MODEL` | Optional backup model on 503/429/404 | — |
-| `GEMINI_TIMEOUT_SECONDS` | API timeout (a timeout switches to the fallback model) | 120 |
-| `MAX_FILE_MB` | Upload limit (keep `maxUploadSize` in `.streamlit/config.toml` equal; it is the server-wide cap) | 5 |
-| `MAX_DOCUMENT_CHARS` | Max characters per AI request (longer documents are split into parts) | 30000 |
-| `CHUNK_OVERLAP_CHARS` | Overlap between consecutive parts | 1000 |
-| `MAX_CHUNKS` | Max parts analysed per document | 8 |
-| `MAX_PDF_PAGES` | Max PDF pages read | 30 |
+## 6. Google Gemini API Configuration
 
-## Run tests
+IntelliDocs AI uses the Google Gemini API for AI-powered document classification, structured extraction, and summarization.
+
+Create an API key through Google AI Studio:
+
+[https://aistudio.google.com/](https://aistudio.google.com/)
+
+Configure the key through a local `.env` file for local development or through the Render Environment settings for deployment.
+
+### Environment Variables
+
+| Variable                 | Purpose                                            | Default / Notes                                                                    |
+| ------------------------ | -------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `GEMINI_API_KEY`         | Authenticates Gemini API requests                  | Required for AI features                                                           |
+| `GEMINI_MODEL`           | Primary Gemini model identifier                    | `gemini-flash-latest` in the documented configuration                              |
+| `GEMINI_FALLBACK_MODEL`  | Optional fallback model for supported API failures | Optional                                                                           |
+| `GEMINI_TIMEOUT_SECONDS` | Configures the API timeout                         | Confirm the code default in `backend/config.py`; deployment values can override it |
+| `MAX_FILE_MB`            | Maximum upload size in MB                          | 5                                                                                  |
+| `MAX_DOCUMENT_CHARS`     | Character threshold for document processing        | 30000                                                                              |
+| `CHUNK_OVERLAP_CHARS`    | Overlap between document chunks                    | 1000                                                                               |
+| `MAX_CHUNKS`             | Maximum number of chunks processed                 | 8                                                                                  |
+| `MAX_PDF_PAGES`          | Maximum number of PDF pages read                   | 30                                                                                 |
+
+The actual defaults are determined by the application configuration. If a value is changed in the deployment environment, document the deployed value separately when necessary.
+
+**Security requirements:**
+
+- Never publish API key values in README files, screenshots, or source code.
+- Never commit `.env` to GitHub.
+- Store production credentials in Render Environment Variables.
+- If a key is exposed, revoke it and create a replacement.
+- Keep `.env.example` limited to variable names and non-secret example values.
+
+If Gemini returns a model-not-found error, check the model identifiers available to your API key and update `GEMINI_MODEL` or the fallback configuration. Availability, quotas, and rate limits can change.
+
+## 7. Testing
+
+### Automated Tests
+
+Run the test suite from the project root:
+
 ```powershell
 python -m pytest -q
 ```
-No API key or network is needed; AI responses are mocked.
 
-## Testing the main features manually
-1. **Overview → click a sample document**, pick `sample_resume.pdf` (resume), `sample_academic_notes.txt` or `sample_business_report.pdf`,
-   then **Run analysis**. The detected type is shown as a badge.
-2. **Overview or AI Analyzer:** try Basic vs Detailed, change the summary style, pick focus topics, click *Run Analysis*, then *Regenerate summary*.
-3. Load `sample_resume_incomplete.txt` (missing fields, low score) and `sample_syllabus.txt`, `sample_certificate.txt`,
-   `sample_project_report.txt` to see the other document types. Try overriding the *Document type* and re-running.
-4. **Data Extraction:** edit the email to something invalid or blank and watch completeness update; download the JSON.
-5. **Insights Hub:** the charts change with the document: resumes show skills/experience/education; the business report
-   shows key figures and topic mentions; the academic notes show topics and a date timeline. Raise or lower the analysis
-   level and watch charts appear or disappear.
-6. Upload an empty `.txt`, a `.docx`, or a non-PDF renamed to `.pdf` to see the error handling.
+**Latest recorded local test result:** 137 passed in 53.61 seconds.
 
-## Deploy on Render
-1. Push the repo to GitHub (never commit `.env`).
-2. Render → **New → Blueprint** (uses `render.yaml`) or **New → Web Service** with:
-   build `pip install -r requirements.txt`, start `streamlit run app.py --server.port $PORT --server.address 0.0.0.0`.
-3. Add the environment variable `GEMINI_API_KEY` in the Render dashboard (and optionally `GEMINI_MODEL`).
-4. Health check path: `/_stcore/health`.
-5. Verify: open the URL, load a sample, run an analysis, confirm Settings shows the key as configured.
-Free Render instances sleep when idle, so the first load can take about a minute.
+The test suite covers application smoke tests, document processing, document classification, extraction, validation, and other application behaviours. AI responses are mocked in the tests, so a successful test run does not guarantee that the live Gemini API is available or that every live analysis will succeed.
 
-## Technical explanation
-**Document types.** `backend/doctype.py` holds one spec per type: which fields each analysis level extracts and which
-fields are required for completeness. Detection order: your override, then confident keyword rules, then a Gemini
-classification call, then low-confidence rules (shown with a warning). Resume logic is unchanged; every other type uses the
-`GeneralData` schema.
+### Manual Feature Testing
 
-**Extraction logic.** The document text is wrapped in `<document>` tags; the system instruction tells Gemini to treat it
-as untrusted data and never follow instructions inside it. Gemini returns JSON (JSON mime type); the response is parsed
-tolerantly, validated with Pydantic, and if invalid the model is asked once more with the error. After validation,
-rule-based grounding checks compare results with the source. Resumes: an email not present in the text is removed (and a
-regex recovers a real one), skills not found are dropped, and names/institutions/companies not found are flagged
-*uncertain*. Other documents: dates, entity names and numeric figures must appear verbatim or they are removed; titles,
-authors, topics, key points, findings and facts that are only loosely supported by the text are flagged *uncertain*. Fields outside the analysis scope are reset to null/empty.
+1. Open the Overview page.
+2. Upload a sample resume PDF or TXT file.
+3. Run document analysis and inspect the detected document type.
+4. Try Basic, Standard, and Detailed analysis levels.
+5. Change the summary style and focus topics.
+6. Inspect extracted fields, completeness, and validation messages.
+7. Download the extracted JSON.
+8. Open Insights Hub and check whether the available data produces charts.
+9. Test a sample academic note, certificate, syllabus, and business report.
+10. Upload an empty TXT file, an unsupported file, or an invalid PDF and check the error handling.
+11. Repeat the main workflow on the deployed application.
 
-**Analysis levels.** `Basic` → name, email, skills, education, short overview. `Standard` → + work experience,
-certifications, projects and a fuller summary. `Detailed` → + AI skill categories, quality notes and a comprehensive summary.
-Focus topics replace the level's default field set, so only the selected fields are requested; required fields that are
-not requested are shown as *not verified*. Level and
-style also select different summary length and format instructions.
+For a meaningful live test, confirm that Gemini-generated summaries and extracted fields are actually returned, not merely that the website loads.
 
-**Validation & completeness.** Required fields depend on the document type (see the table above) and all of them are in
-the denominator. Per required field: present and valid = 1, present but uncertain/incomplete (e.g. role without dates) =
-0.5, missing or invalid (bad email format) = 0. A required field that was not checked (outside the level/focus, or not
-found in a partially analysed document) is *not verified*: it scores 0 but is never reported as missing. Fields a type
-does not use are *not applicable*. Completeness = sum ÷ number of required fields × 100, so 100% is only shown when every
-required field was checked and found. If the user edits an uncertain field it counts as reviewed.
+## 8. Deployment on Render
 
-**Long documents.** Text longer than `MAX_DOCUMENT_CHARS` (default 30,000 characters per request) is split at
-paragraph/sentence boundaries into parts that overlap by `CHUNK_OVERLAP_CHARS` (default 1,000). Each part is extracted
-and grounded separately; results are merged (first value for single fields, de-duplicated lists). Each part is also
-summarised and the part notes are combined into one summary. At most `MAX_CHUNKS` parts (default 8, ≈240,000
-characters) are processed. If that cap or `MAX_PDF_PAGES` is reached, or any part fails (API error/timeout), the app
-shows **Partial analysis** with the reason instead of “Analysis completed”, and unfound fields are *not verified*.
+The project is configured for deployment on Render.
 
-## Known limitations
-- Scanned/image-only PDFs are not supported (no OCR); password-protected PDFs are rejected.
-- PDF and TXT only (no DOCX or images). Document-type keyword rules are tuned for English text; the AI fallback and manual override cover the rest.
-- Figures are compared only within the same unit group (%, currency, counts), and ambiguous dates such as 03/04/2025 are not plotted.
-- Documents longer than `MAX_CHUNKS` × `MAX_DOCUMENT_CHARS` characters are analysed only partly (clearly flagged). Each part costs extra Gemini calls (one extraction and one summary per part, plus one to combine), so long documents take longer and use more quota.
-- Grounding is text matching: valid abbreviations (e.g. "JS" for JavaScript) may be dropped; review warnings are shown.
-- Experience totals use only roles with parseable dates; the timeline needs start and end dates.
-- Free Gemini tier rate limits can cause temporary errors; one automatic retry is made.
-- Session data (recent documents, feedback) is held in memory and lost on refresh.
-- Deployment to Render has not been performed or verified by the author of this code; follow the steps above.
+### Deployment Steps
 
-## Security
-Keys come only from environment variables; `.env` is git-ignored; uploads are processed in memory and not stored; document
-text and keys are never logged; dynamic text in custom HTML is escaped; AI output must always be reviewed.
+1. Push the project source code to GitHub.
+
+2. Sign in to Render: [https://dashboard.render.com/](https://dashboard.render.com/)
+
+3. Create or open the IntelliDocs AI web service.
+
+4. Configure the build command:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+5. Configure the start command:
+
+   ```bash
+   streamlit run app.py --server.port $PORT --server.address 0.0.0.0
+   ```
+
+6. Add `GEMINI_API_KEY` in the service's Environment settings.
+
+7. Configure `GEMINI_MODEL`, `GEMINI_FALLBACK_MODEL`, and `GEMINI_TIMEOUT_SECONDS` when needed.
+
+8. Deploy the application and review the deployment logs.
+
+9. Open the public URL and test document upload, AI analysis, extraction, and insights.
+
+The configured health-check path is:
+
+```text
+/_stcore/health
+```
+
+### Live Demo
+
+[https://intellidocs-ai-z7hx.onrender.com](https://intellidocs-ai-z7hx.onrender.com)
+
+Render free services may sleep when inactive. The first request after inactivity can take longer while the service starts. Gemini API latency and rate limits may also affect processing time.
+
+Deployment success confirms that the service started; it does not independently confirm that all AI features work correctly. Verify the complete workflow before submission.
+
+## 9. Technical Explanation
+
+### Document Processing
+
+The document processor validates uploaded files and extracts text from supported PDF and TXT formats. It applies file-size and page limits and returns clear errors for unsupported or invalid inputs.
+
+### Document Classification
+
+Document type detection uses keyword rules first. When confidence is insufficient, the application can request classification from Gemini. Users can manually select a document type when necessary.
+
+### AI Extraction and Summarization
+
+The extraction layer constructs prompts based on the detected document type, analysis level, and selected focus topics. The application requests structured information from Gemini, parses the response, and validates it against the relevant Pydantic schema.
+
+The summary generation process produces a summary in the selected style. Longer documents may be split into chunks and processed separately.
+
+### Validation and Grounding
+
+After extraction, rule-based checks compare selected outputs against the original document text. For example, resume email addresses and skills can be checked against source text. Other document types use checks for dates, names, and numeric figures.
+
+These checks help identify unsupported information but do not guarantee complete factual accuracy. Users should review extracted values and uncertainty warnings.
+
+### Completeness Scoring
+
+Completeness is calculated from required fields for the selected document type. Fields that are not requested because of the analysis level or focus settings may be shown as unverified. Therefore, a low completeness score does not always mean that the source document lacks information.
+
+### Data Visualization
+
+Plotly charts use extracted information rather than invented values. The available chart types depend on the document type and the information successfully extracted.
+
+## 10. Known Limitations
+
+- Scanned or image-only PDFs are not supported through OCR.
+- Password-protected PDFs are rejected.
+- The supported upload formats are PDF and TXT; DOCX and image files are not supported.
+- Keyword-based document classification is primarily tuned for English text.
+- Text matching may reject valid abbreviations or paraphrased values.
+- AI-generated information can be incomplete or incorrect and should be reviewed.
+- Long documents require more API calls and may take longer to process.
+- Processing limits can result in partial analysis, which should be clearly indicated to users.
+- Gemini API errors, quotas, model availability, and rate limits can affect live analysis.
+- Visualizations may be unavailable when the extraction result does not contain enough relevant data.
+- Experience calculations and timelines depend on dates that can be parsed reliably.
+- Session-based data such as recent analyses or feedback may be lost when the session resets or the page is refreshed.
+- The live application must be tested separately from automated tests to confirm end-to-end Gemini functionality.
+
+## 11. Security and Privacy
+
+- API keys are read from environment variables rather than hard-coded in the source.
+- `.env` is excluded from version control.
+- Uploaded documents are processed in memory according to the current implementation.
+- Application logging should not expose API keys or sensitive document contents.
+- User documents may contain personal information; only upload documents you are authorised to process.
+- AI-generated output should be reviewed before it is relied on for decisions.
+- Before creating the submission ZIP, exclude local environment folders, cache files, credentials, and other unnecessary artifacts.
+
+## 12. Future Improvements
+
+Possible future improvements include:
+
+- OCR support for scanned documents.
+- Additional file formats such as DOCX.
+- Better multilingual document classification and extraction.
+- Improved field-level accuracy and validation.
+- Reduced API latency and more efficient chunk processing.
+- Enhanced monitoring and clearer error reporting.
+- More comprehensive integration testing with controlled API access.
+- More robust session persistence and document history management.
+
+## 13. Assessment Submission Checklist
+
+Before submitting the project:
+
+- [ ] Confirm the source code is pushed to GitHub.
+- [ ] Run `python -m pytest -q` and record the actual result.
+- [ ] Verify the deployed application can complete the main document-analysis workflow.
+- [ ] Confirm that the README accurately describes the deployed implementation.
+- [ ] Include the required source code and configuration files in the ZIP.
+- [ ] Include the candidate details file and the required resume PDF.
+- [ ] Exclude `.env`, API keys, virtual environments, and cache directories.
+- [ ] Confirm the GitHub repository and public demo links are correct.
+- [ ] Prepare to explain the implementation, AI integration, validation, limitations, and possible improvements.
+
+---
+
+**Project:** IntelliDocs AI
+**Assessment:** iBee Analytics Developer Assessment — Task 2
+**Repository:** [https://github.com/muthu-mari800/Intellidocs-ai](https://github.com/muthu-mari800/Intellidocs-ai)
+**Live Demo:** [https://intellidocs-ai-z7hx.onrender.com](https://intellidocs-ai-z7hx.onrender.com)

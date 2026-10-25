@@ -158,7 +158,11 @@ def test_upload_limits_are_consistent():
     env_example = (ROOT / ".env.example").read_text()
     example_mb = float(re.search(r"MAX_FILE_MB=(\S+)", env_example).group(1))
     assert server_cap == example_mb == 5
-    assert "max_upload_size=max(1, int(settings.max_file_mb))" in (ROOT / "app.py").read_text()
+    
+    assert "max_upload_size=max(1, int(settings.max_file_mb))" in (
+       ROOT / "app.py"
+    ).read_text(encoding="utf-8")
+
 
 
 def test_backend_rejects_file_over_limit(monkeypatch):
